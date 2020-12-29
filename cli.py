@@ -1,4 +1,5 @@
 import requests
+import argparse
 from habitica import HabiticaAPI
 
 BASE_URL = "https://habitica.com/api/v3"
@@ -17,10 +18,59 @@ def get_auth():
     auth_headers = {'x-api-user': user_id, 'x-api-key': api_key, 'x-client': client_key}
     return auth_headers
 
+def print_daily(daily):
+    task_name = daily["text"]
+    streak = daily["streak"]
+    if daily["completed"]:
+        output = "[x] {task_name} ({streak} days in a row)".format(
+            task_name=task_name, streak=streak)
+    else:
+        output = "[ ] {task_name} ({streak} days in a row)".format(
+            task_name=task_name, streak=streak)
 
+    print(output)
+
+def print_habit(habit):
+    print(habit["text"])
+    print(habit["counterUp"])
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="A CLI for Habitica")
+    parser.add_argument('command', nargs="?", default="status")
+    parser.add_argument('filter', nargs="?")
+    args = parser.parse_args()
+
     hbt_api = HabiticaAPI(get_auth())
-    query_params = {'type': 'dailys'}
-    tasks = hbt_api.make_request("tasks/user", query_params)
-    print(tasks)
+
+    if (args.command == "list"):
+        if (args.filter == "dailys" or args.filter == "dailies"):
+            query_params = {'type': 'dailys'}
+            tasks = hbt_api.make_request("tasks/user", query_params)
+            
+            for t in tasks:
+                print_daily(t)
+
+        elif (args.filter == "habits"):
+            query_params = {'type': 'habits'}
+            tasks = hbt_api.make_request("tasks/user", query_params)
+
+            for t in tasks:
+                print_habit(t)
+
+        else:
+            tasks = hbt_api.make_request("tasks/user")
+
+            habits = [x for x in tasks if x["type"] == "habit"]
+            dailies = [x for x in tasks if x["type"] == "daily"]
+
+            print("==DAILIES==")
+            for d in dailies:
+                print_daily(d)
+
+
+            print("==HABITS==")
+            for h in habits:
+                print_habit(h)
+
+        
+    
