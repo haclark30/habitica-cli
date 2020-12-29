@@ -32,14 +32,19 @@ def print_daily(daily):
 
 def print_habit(habit):
     print(habit["text"])
-    print(habit["counterUp"])
+    if habit["up"]:
+        print(" --{} ↑".format(habit["counterUp"]))
+
+    if habit["down"]:
+        print(" --{} ↓".format(habit["counterDown"]))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="A CLI for Habitica")
-    parser.add_argument('command', nargs="?", default="status")
-    parser.add_argument('filter', nargs="?")
-    args = parser.parse_args()
+    subparsers = parser.add_subparsers(dest="command")
+    parser_list = subparsers.add_parser("list")
+    parser_list.add_argument("filter", nargs="?")
 
+    args = parser.parse_args()
     hbt_api = HabiticaAPI(get_auth())
 
     if (args.command == "list"):
