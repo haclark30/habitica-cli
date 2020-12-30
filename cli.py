@@ -1,5 +1,6 @@
 import requests
 import argparse
+import os
 from habitica import HabiticaAPI
 
 BASE_URL = "https://habitica.com/api/v3"
@@ -41,10 +42,16 @@ def print_habit(habit):
 def setup_parser():
     parser = argparse.ArgumentParser(description="A CLI for Habitica")
     subparsers = parser.add_subparsers(dest="command")
+
     parser_list = subparsers.add_parser("list")
     parser_list.add_argument("filter", nargs="?", choices=["habits", "dailys", "dailies"])
+
     parser_quit = subparsers.add_parser("quit", aliases=["q"])
     parser_quit.set_defaults(command="quit")
+
+    parser_clear = subparsers.add_parser("clear")
+
+    subparsers.add_parser("status")
     return parser
 
 def parse_shell_args(parser):
@@ -63,6 +70,26 @@ def cli_shell(parser, hbt_api):
             break
         elif (args.command == "list"):
             run_list_command(args, hbt_api)
+        elif (args.command == "status"):
+            run_status_command(hbt_api)
+        elif (args.command == "clear"):
+            run_clear_command()
+
+def run_clear_command():
+    os.system("clear")
+def run_status_command(hbt_api):
+    user = hbt_api.make_request("user")
+    profile = user['profile']
+    stats = user['stats']
+
+    print(profile['name'])
+    print('-' * 20)
+    print("Level {} {}".format(stats['lvl'], stats['class'].capitalize()))
+    print('-' * 20)
+
+    print("HP: {}/{}".format(stats['hp'], stats['maxHealth']))
+    print("XP: {}/{}".format(stats['exp'], stats['toNextLevel']))
+    print("MP: {}/{}".format(stats['mp'], stats['maxMP']))
 
 def run_list_command(args, hbt_api):
     if (args.filter == "dailys" or args.filter == "dailies"):
