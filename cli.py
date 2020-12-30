@@ -38,44 +38,69 @@ def print_habit(habit):
     if habit["down"]:
         print(" --{} ↓".format(habit["counterDown"]))
 
-if __name__ == "__main__":
+def setup_parser():
     parser = argparse.ArgumentParser(description="A CLI for Habitica")
     subparsers = parser.add_subparsers(dest="command")
     parser_list = subparsers.add_parser("list")
-    parser_list.add_argument("filter", nargs="?")
+    parser_list.add_argument("filter", nargs="?", choices=["habits", "dailys", "dailies"])
+    parser_quit = subparsers.add_parser("quit", aliases=["q"])
+    parser_quit.set_defaults(command="quit")
+    return parser
 
-    args = parser.parse_args()
+def parse_shell_args(parser):
+    in_args = input("habitica $ ")
+    args = parser.parse_args(in_args.split())
+    return args
+
+def cli_shell(parser, hbt_api):
+    while (True):
+        try:
+            args = parse_shell_args(parser)
+        except SystemExit:
+            continue
+
+        if (args.command == "quit"):
+            break
+        elif (args.command == "list"):
+            run_list_command(args, hbt_api)
+
+def run_list_command(args, hbt_api):
+    if (args.filter == "dailys" or args.filter == "dailies"):
+        query_params = {'type': 'dailys'}
+        tasks = hbt_api.make_request("tasks/user", query_params)
+
+        for t in tasks:
+            print_daily(t)
+
+    elif (args.filter == "habits"):
+        query_params = {'type': 'habits'}
+        tasks = hbt_api.make_request("tasks/user", query_params)
+
+        for t in tasks:
+            print_habit(t)
+
+    else:
+        tasks = hbt_api.make_request("tasks/user")
+
+        habits = [x for x in tasks if x["type"] == "habit"]
+        dailies = [x for x in tasks if x["type"] == "daily"]
+
+        print("==DAILIES==")
+        for d in dailies:
+            print_daily(d)
+
+
+        print("==HABITS==")
+        for h in habits:
+            print_habit(h)
+
+def main():
+    # setup parser and Habitica API
+    parser = setup_parser()
     hbt_api = HabiticaAPI(get_auth())
 
-    if (args.command == "list"):
-        if (args.filter == "dailys" or args.filter == "dailies"):
-            query_params = {'type': 'dailys'}
-            tasks = hbt_api.make_request("tasks/user", query_params)
-            
-            for t in tasks:
-                print_daily(t)
+    # run the shell
+    cli_shell(parser, hbt_api)
 
-        elif (args.filter == "habits"):
-            query_params = {'type': 'habits'}
-            tasks = hbt_api.make_request("tasks/user", query_params)
-
-            for t in tasks:
-                print_habit(t)
-
-        else:
-            tasks = hbt_api.make_request("tasks/user")
-
-            habits = [x for x in tasks if x["type"] == "habit"]
-            dailies = [x for x in tasks if x["type"] == "daily"]
-
-            print("==DAILIES==")
-            for d in dailies:
-                print_daily(d)
-
-
-            print("==HABITS==")
-            for h in habits:
-                print_habit(h)
-
-        
-    
+if __name__ == "__main__":
+    main()
