@@ -46,37 +46,23 @@ def setup_parser():
     parser_list = subparsers.add_parser("list")
     parser_list.add_argument("filter", nargs="?", choices=["habits", "dailys", "dailies"])
 
-    parser_quit = subparsers.add_parser("quit", aliases=["q"])
-    parser_quit.set_defaults(command="quit")
-
-    parser_clear = subparsers.add_parser("clear")
+    parser_up = subparsers.add_parser("up")
+    parser_up.add_argument("task")
 
     subparsers.add_parser("status")
     return parser
 
-def parse_shell_args(parser):
-    in_args = input("habitica $ ")
-    args = parser.parse_args(in_args.split())
-    return args
 
-def cli_shell(parser, hbt_api):
-    while (True):
-        try:
-            args = parse_shell_args(parser)
-        except SystemExit:
-            continue
+def run_command(parser, hbt_api):
+    args = parser.parse_args()
 
-        if (args.command == "quit"):
-            break
-        elif (args.command == "list"):
-            run_list_command(args, hbt_api)
-        elif (args.command == "status"):
-            run_status_command(hbt_api)
-        elif (args.command == "clear"):
-            run_clear_command()
+    if (args.command == "list"):
+        run_list_command(args, hbt_api)
+    elif (args.command == "status"):
+        run_status_command(hbt_api)
+    elif (args.command == "up"):
+        run_up_command(args, hbt_api)
 
-def run_clear_command():
-    os.system("clear")
 
 def run_status_command(hbt_api):
     user = hbt_api.make_request("user")
@@ -122,13 +108,16 @@ def run_list_command(args, hbt_api):
         for h in habits:
             print_habit(h)
 
+def run_up_command(args, hbt_api):
+    print(args)
+
 def main():
     # setup parser and Habitica API
     parser = setup_parser()
     hbt_api = HabiticaAPI(get_auth())
 
-    # run the shell
-    cli_shell(parser, hbt_api)
+    # run the command
+    run_command(parser, hbt_api)
 
 if __name__ == "__main__":
     main()
