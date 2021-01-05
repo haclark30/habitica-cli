@@ -77,6 +77,7 @@ def cli_shell(parser, hbt_api):
 
 def run_clear_command():
     os.system("clear")
+
 def run_status_command(hbt_api):
     user = hbt_api.make_request("user")
     profile = user['profile']
@@ -94,14 +95,14 @@ def run_status_command(hbt_api):
 def run_list_command(args, hbt_api):
     if (args.filter == "dailys" or args.filter == "dailies"):
         query_params = {'type': 'dailys'}
-        tasks = hbt_api.make_request("tasks/user", query_params)
+        tasks = hbt_api.make_request("tasks/user", params=query_params)
 
         for t in tasks:
             print_daily(t)
 
     elif (args.filter == "habits"):
         query_params = {'type': 'habits'}
-        tasks = hbt_api.make_request("tasks/user", query_params)
+        tasks = hbt_api.make_request("tasks/user", params=query_params)
 
         for t in tasks:
             print_habit(t)
