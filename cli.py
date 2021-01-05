@@ -1,6 +1,7 @@
 import requests
 import argparse
 import os
+import re
 from habitica import HabiticaAPI
 
 BASE_URL = "https://habitica.com/api/v3"
@@ -110,11 +111,25 @@ def run_list_command(args, hbt_api):
 
 def run_up_command(args, hbt_api):
     tasks = hbt_api.make_request("tasks/user")
+    matching_tasks = find_matching_tasks(args, tasks)
+            
+    if len(matching_tasks) == 0:
+        print('no tasks matching "{}" found'.format(args.task))
+    elif len(matching_tasks) == 1:
+        task = matching_tasks[0]
+        score_task(hbt_api, task, 'up')
+        print("scored {} up".format(task['text']))
+    else:
+        print('found multiple matching tasks')
+
+def find_matching_tasks(args, tasks):
+    matching_tasks = []
+    search_string = "^{}.*".format(args.task)
 
     for t in tasks:
-        if t['up'] and t['text'] == args.task:
-            score_task(hbt_api, t, "up")
-            print("scored {} up".format(t['text']))
+        if re.search(search_string, t['text'], re.IGNORECASE):
+            matching_tasks.append(t)
+    return matching_tasks
 
 
 def score_task(hbt_api, task, direction):
