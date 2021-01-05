@@ -109,7 +109,17 @@ def run_list_command(args, hbt_api):
             print_habit(h)
 
 def run_up_command(args, hbt_api):
-    print(args)
+    tasks = hbt_api.make_request("tasks/user")
+
+    for t in tasks:
+        if t['up'] and t['text'] == args.task:
+            score_task(hbt_api, t, "up")
+            print("scored {} up".format(t['text']))
+
+
+def score_task(hbt_api, task, direction):
+    uri = "tasks/{}/score/{}".format(task['id'], direction)
+    return hbt_api.make_request(uri, method='post')
 
 def main():
     # setup parser and Habitica API
