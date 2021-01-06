@@ -49,6 +49,7 @@ def setup_parser():
 
     parser_up = subparsers.add_parser("up")
     parser_up.add_argument("task")
+    parser_up.add_argument("-n", "--num", type=int, default=1)
 
     subparsers.add_parser("status")
     return parser
@@ -117,8 +118,9 @@ def run_up_command(args, hbt_api):
         print('no tasks matching "{}" found'.format(args.task))
     elif len(matching_tasks) == 1:
         task = matching_tasks[0]
-        score_task(hbt_api, task, 'up')
-        print("scored {} up".format(task['text']))
+        for _ in range(args.num):
+            score_task(hbt_api, task, 'up')
+        print("scored {} up {} time(s)".format(task['text'], args.num))
     else:
         print('found multiple matching tasks')
 
