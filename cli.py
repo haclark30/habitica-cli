@@ -55,16 +55,13 @@ def setup_parser():
     return parser
 
 
-def run_command(parser, hbt_api):
-    args = parser.parse_args()
-
+def run_command(args, hbt_api):
     if (args.command == "list"):
         run_list_command(args, hbt_api)
     elif (args.command == "status"):
         run_status_command(hbt_api)
     elif (args.command == "up"):
         run_up_command(args, hbt_api)
-
 
 def run_status_command(hbt_api):
     user = hbt_api.make_request("user")
@@ -144,7 +141,8 @@ def main():
     hbt_api = HabiticaAPI(get_auth())
 
     # run the command
-    run_command(parser, hbt_api)
+    args = parser.parse_args()
+    run_command(args, hbt_api)
 
 if __name__ == "__main__":
     main()
