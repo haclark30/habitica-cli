@@ -48,5 +48,15 @@ class TestCLI(unittest.TestCase):
             cli.run_command(args, self.hbt_api)
             self.assertEqual(mock_out.getvalue(), expected_output)
 
+    def test_find_matching_tasks(self):
+        test_tasks = [{'text':'test1'}, {'text':'test2'}]
+        match_test_all = cli.find_matching_tasks('test', test_tasks)
+        match_test_one = cli.find_matching_tasks('test1', test_tasks)
+        match_test_none = cli.find_matching_tasks('none', test_tasks)
+
+        self.assertEqual(match_test_all, test_tasks)
+        self.assertEqual([test_tasks[0]], match_test_one)
+        self.assertEqual([], match_test_none)
+        
 if __name__ == "__main__":
     unittest.main()
