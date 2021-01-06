@@ -109,7 +109,7 @@ def run_list_command(args, hbt_api):
 
 def run_up_command(args, hbt_api):
     tasks = hbt_api.make_request("tasks/user")
-    matching_tasks = find_matching_tasks(args, tasks)
+    matching_tasks = find_matching_tasks(args.task, tasks)
             
     if len(matching_tasks) == 0:
         print('no tasks matching "{}" found'.format(args.task))
@@ -121,9 +121,9 @@ def run_up_command(args, hbt_api):
     else:
         print('found multiple matching tasks')
 
-def find_matching_tasks(args, tasks):
+def find_matching_tasks(task_name, tasks):
     matching_tasks = []
-    search_string = "^{}.*".format(args.task)
+    search_string = "^{}.*".format(task_name)
 
     for t in tasks:
         if re.search(search_string, t['text'], re.IGNORECASE):
