@@ -1,0 +1,5 @@
+==DAILIES==
+[x] test daily 1 (5 days in a row)
+==HABITS==
+test habit 1
+ --10 ↑

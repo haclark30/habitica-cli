@@ -1,0 +1,7 @@
+test habit 1
+ --10 ↑
+test habit 2
+ --5 ↑
+ --0 ↓
+test habit 3
+ --3 ↓

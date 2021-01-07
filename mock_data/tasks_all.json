@@ -1,0 +1,17 @@
+{
+    "data": [
+        {
+            "type": "habit",
+            "text": "test habit 1",
+            "up": true,
+            "down": false,
+            "counterUp": 10
+        },
+        {
+            "type": "daily",
+            "text": "test daily 1",
+            "completed": true,
+            "streak": 5
+        }
+    ]
+}

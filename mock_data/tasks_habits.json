@@ -1,0 +1,27 @@
+{
+    "data": [
+        {
+            "type": "habit",
+            "text": "test habit 1",
+            "up": true,
+            "down": false,
+            "counterUp": 10
+        },
+        {
+            "type": "habit",
+            "text": "test habit 2",
+            "up": true,
+            "down": true,
+            "counterUp": 5,
+            "counterDown": 0
+        },
+        {
+            "type": "habit",
+            "text": "test habit 3",
+            "up": false,
+            "down": true,
+            "counterUp": 5,
+            "counterDown": 3
+        }
+    ]
+}

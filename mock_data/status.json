@@ -1,0 +1,17 @@
+{
+    "data": {
+        "profile": {
+            "name": "test user"
+        },
+        "stats": {
+            "lvl": 1,
+            "class": "Warrior",
+            "hp": 10,
+            "maxHealth": 100,
+            "exp": 100,
+            "toNextLevel": 1000,
+            "mp": 10,
+            "maxMP": 50
+        }
+    }
+}
