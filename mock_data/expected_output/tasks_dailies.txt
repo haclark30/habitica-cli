@@ -1,0 +1,2 @@
+[x] test daily 1 (5 days in a row)
+[ ] test daily 2 (2 days in a row)

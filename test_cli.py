@@ -43,6 +43,12 @@ class TestCLI(unittest.TestCase):
         self.mock_get_request(args, mock_tasks, 'mock_data/tasks_habits.json',
             'mock_data/expected_output/tasks_habits.txt')
 
+    @patch("habitica.requests.get")
+    def test_list_habit_dailies(self, mock_tasks):
+        args = self.parser.parse_args(["list", "dailies"])
+        self.mock_get_request(args, mock_tasks, 'mock_data/tasks_dailies.json',
+            'mock_data/expected_output/tasks_dailies.txt')
+
     def mock_get_request(self, args, mock_api, mock_data_path, expected_output_path):
         mock_api.return_value.status_code = 200
 
