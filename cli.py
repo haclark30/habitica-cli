@@ -5,6 +5,7 @@ import re
 from habitica import HabiticaAPI
 
 BASE_URL = "https://habitica.com/api/v3"
+CACHE_PATH = "./cache"
 
 def get_auth():
     client_key = "93c29c04-03b3-416f-bc6f-0edbfd806238-HabiticaCLI"
