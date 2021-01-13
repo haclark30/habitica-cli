@@ -11,7 +11,8 @@
             "type": "daily",
             "text": "test daily 1",
             "completed": true,
-            "streak": 5
+            "streak": 5,
+            "isDue": true
         }
     ]
 }

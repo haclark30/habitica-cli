@@ -110,7 +110,8 @@ def run_list_command(args, hbt_api):
         tasks = hbt_api.make_request("tasks/user", params=query_params)
 
         for t in tasks:
-            print_daily(t)
+            if t["isDue"]:
+                print_daily(t)
 
     elif (args.filter == "habits"):
         query_params = {'type': 'habits'}
@@ -127,7 +128,8 @@ def run_list_command(args, hbt_api):
 
         print("==DAILIES==")
         for d in dailies:
-            print_daily(d)
+            if d["isDue"]:
+                print_daily(d)
 
 
         print("==HABITS==")

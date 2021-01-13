@@ -4,13 +4,22 @@
             "type": "daily",
             "text": "test daily 1",
             "completed": true,
-            "streak": 5
+            "streak": 5,
+            "isDue": true
         },
         {
             "type":"daily",
             "text": "test daily 2",
             "completed": false,
-            "streak": 2
+            "streak": 2,
+            "isDue": true
+        },
+        {
+            "type":"daily",
+            "text": "test daily 3",
+            "completed": false,
+            "streak": 2,
+            "isDue": false
         }
     ]
 }
