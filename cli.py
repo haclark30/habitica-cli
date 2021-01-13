@@ -52,6 +52,8 @@ def setup_parser():
     parser_up.add_argument("-n", "--num", type=int, default=1)
 
     subparsers.add_parser("status")
+
+    subparsers.add_parser("quest")
     return parser
 
 
@@ -62,6 +64,8 @@ def run_command(args, hbt_api):
         run_status_command(hbt_api)
     elif (args.command == "up"):
         run_up_command(args, hbt_api)
+    elif (args.command == "quest"):
+        run_quest_command(hbt_api)
 
 def run_status_command(hbt_api):
     user = hbt_api.make_request("user")
@@ -76,6 +80,29 @@ def run_status_command(hbt_api):
     print("HP: {}/{}".format(stats['hp'], stats['maxHealth']))
     print("XP: {}/{}".format(stats['exp'], stats['toNextLevel']))
     print("MP: {}/{}".format(stats['mp'], stats['maxMP']))
+
+def run_quest_command(hbt_api):
+    party_quest = hbt_api.make_request('groups/party')['quest']
+    user_quest = hbt_api.make_request('user')['party']['quest']
+
+    if party_quest['active']:
+        content = hbt_api.make_request('content')
+        quest_content = content['quests'][party_quest['key']]
+        print(quest_content['text'])
+
+        if (quest_content['collect']):
+            collect = quest_content['collect']
+            for item in collect:
+                text = collect[item]['text']
+                curr = party_quest['progress']['collect'][item]
+                total = collect[item]['count']
+
+                print("{}: {}/{}".format(text, curr, total))
+
+            print("\nFound {} items today".format(user_quest['progress']['collectedItems']))
+        
+
+
 
 def run_list_command(args, hbt_api):
     if (args.filter == "dailys" or args.filter == "dailies"):
