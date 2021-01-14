@@ -1,9 +1,11 @@
 import  requests
 import json
+import time
 from os import path
 
 BASE_URL = "https://habitica.com/api/v3"
 CACHE_PATH = "./cache"
+CACHE_TIMEOUT = 60 * 60 * 24
 
 class HabiticaAPI(object):
     """
@@ -24,10 +26,26 @@ class HabiticaAPI(object):
         self.auth_headers = auth_headers
 
     def get_content(self):
-        if path.exists("{}/content.json"):
-            pass
+        content_path = "{}/content.json".format(CACHE_PATH)
+        if path.exists(content_path):
+            with open(content_path, 'r+') as f:
+                content = json.load(f)
+                time_diff = time.time() - content['dateRetrieved']
+                
+                if time_diff > CACHE_TIMEOUT:
+                    content = self.make_request('content')
+                    content['dateRetrieved'] = time.time()
+                    json.dump(content, f)
+                    return content
+                else:
+                    return content
         else:
-            pass
+            content = self.make_request('content')
+            content['dateRetrieved'] = time.time()
+            with open(content_path, 'w') as f:
+                json.dump(content, f)
+
+            return content
 
     def make_request(self, uri, method='get', params=None, data=None):
         if method not in ['get', 'put', 'post', 'delete']:
