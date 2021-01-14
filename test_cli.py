@@ -11,7 +11,7 @@ class TestCLI(unittest.TestCase):
 
     def setUp(self):
         self.parser = cli.setup_parser()
-        self.hbt_api = HabiticaAPI(cli.get_auth())
+        self.hbt_api = HabiticaAPI()
 
     def test_find_matching_tasks(self):
         test_tasks = [{'text':'test1'}, {'text':'test2'}]

@@ -3,23 +3,7 @@ import argparse
 import os
 import re
 from habitica import HabiticaAPI
-
-BASE_URL = "https://habitica.com/api/v3"
-
-def get_auth():
-    client_key = "93c29c04-03b3-416f-bc6f-0edbfd806238-HabiticaCLI"
-    auth_cfg = 'auth.cfg'
-
-    with open(auth_cfg, 'r') as auth_file:
-        user_id = auth_file.readline()
-        user_id = user_id.split('=')[1].strip()
-
-        api_key = auth_file.readline()
-        api_key = api_key.split('=')[1].strip()
-
-    auth_headers = {'x-api-user': user_id, 'x-api-key': api_key, 'x-client': client_key}
-    return auth_headers
-
+    
 def print_daily(daily):
     task_name = daily["text"]
     streak = daily["streak"]
@@ -56,7 +40,6 @@ def setup_parser():
     subparsers.add_parser("quest")
     return parser
 
-
 def run_command(args, hbt_api):
     if (args.command == "list"):
         run_list_command(args, hbt_api)
@@ -86,7 +69,7 @@ def run_quest_command(hbt_api):
     user_quest = hbt_api.make_request('user')['party']['quest']
 
     if party_quest['active']:
-        content = hbt_api.make_request('content')
+        content = hbt_api.get_content()
         quest_content = content['quests'][party_quest['key']]
         print(quest_content['text'])
 
@@ -101,9 +84,6 @@ def run_quest_command(hbt_api):
 
             print("\nFound {} items today".format(user_quest['progress']['collectedItems']))
         
-
-
-
 def run_list_command(args, hbt_api):
     if (args.filter == "dailys" or args.filter == "dailies"):
         query_params = {'type': 'dailys'}
@@ -159,7 +139,6 @@ def find_matching_tasks(task_name, tasks):
             matching_tasks.append(t)
     return matching_tasks
 
-
 def score_task(hbt_api, task, direction):
     uri = "tasks/{}/score/{}".format(task['id'], direction)
     return hbt_api.make_request(uri, method='post')
@@ -167,7 +146,7 @@ def score_task(hbt_api, task, direction):
 def main():
     # setup parser and Habitica API
     parser = setup_parser()
-    hbt_api = HabiticaAPI(get_auth())
+    hbt_api = HabiticaAPI()
 
     # run the command
     args = parser.parse_args()
