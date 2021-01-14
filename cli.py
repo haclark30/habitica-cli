@@ -40,7 +40,6 @@ def setup_parser():
     subparsers.add_parser("quest")
     return parser
 
-
 def run_command(args, hbt_api):
     if (args.command == "list"):
         run_list_command(args, hbt_api)
@@ -70,7 +69,7 @@ def run_quest_command(hbt_api):
     user_quest = hbt_api.make_request('user')['party']['quest']
 
     if party_quest['active']:
-        content = hbt_api.make_request('content')
+        content = hbt_api.get_content()
         quest_content = content['quests'][party_quest['key']]
         print(quest_content['text'])
 
@@ -85,9 +84,6 @@ def run_quest_command(hbt_api):
 
             print("\nFound {} items today".format(user_quest['progress']['collectedItems']))
         
-
-
-
 def run_list_command(args, hbt_api):
     if (args.filter == "dailys" or args.filter == "dailies"):
         query_params = {'type': 'dailys'}
@@ -142,7 +138,6 @@ def find_matching_tasks(task_name, tasks):
         if re.search(search_string, t['text'], re.IGNORECASE):
             matching_tasks.append(t)
     return matching_tasks
-
 
 def score_task(hbt_api, task, direction):
     uri = "tasks/{}/score/{}".format(task['id'], direction)
