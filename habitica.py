@@ -28,17 +28,19 @@ class HabiticaAPI(object):
     def get_content(self):
         content_path = "{}/content.json".format(CACHE_PATH)
         if path.exists(content_path):
-            with open(content_path, 'r+') as f:
+            with open(content_path, 'r') as f:
                 content = json.load(f)
-                time_diff = time.time() - content['dateRetrieved']
+            
+            time_diff = time.time() - content['dateRetrieved']
                 
-                if time_diff > CACHE_TIMEOUT:
-                    content = self.make_request('content')
-                    content['dateRetrieved'] = time.time()
+            if time_diff > CACHE_TIMEOUT:
+                content = self.make_request('content')
+                content['dateRetrieved'] = time.time()
+                with open(content_path, 'w') as f:
                     json.dump(content, f)
-                    return content
-                else:
-                    return content
+                return content
+            else:
+                return content
         else:
             content = self.make_request('content')
             content['dateRetrieved'] = time.time()
