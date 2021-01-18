@@ -73,7 +73,7 @@ def run_quest_command(hbt_api):
         quest_content = content['quests'][party_quest['key']]
         print(quest_content['text'])
 
-        if (quest_content['collect']):
+        if 'collect' in quest_content:
             collect = quest_content['collect']
             for item in collect:
                 text = collect[item]['text']
@@ -83,6 +83,13 @@ def run_quest_command(hbt_api):
                 print("{}: {}/{}".format(text, curr, total))
 
             print("\nFound {} items today".format(user_quest['progress']['collectedItems']))
+
+        elif 'boss' in quest_content:
+            print("You are currently facing {}.".format(quest_content['boss']['name']))
+            print("HP: {}/{}".format(party_quest['progress']['hp'],quest_content['boss']['hp']))
+            print("Pending Damage: {:.1f}".format(user_quest['progress']['up']))
+        else:
+            print("Unknown quest type")
 
     else:
         print("You are not on a quest.")
