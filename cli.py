@@ -83,6 +83,9 @@ def run_quest_command(hbt_api):
                 print("{}: {}/{}".format(text, curr, total))
 
             print("\nFound {} items today".format(user_quest['progress']['collectedItems']))
+
+    else:
+        print("You are not on a quest.")
         
 def run_list_command(args, hbt_api):
     if (args.filter == "dailys" or args.filter == "dailies"):
